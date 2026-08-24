@@ -24,7 +24,8 @@ export default function TermosPage() {
           <h2 className="font-serif text-xl font-bold text-stone mt-8">1. Sobre a empresa</h2>
           <p>
             Chef do Disco (razão social a definir), CNPJ 00.000.000/0001-00 (placeholder —
-            substituir), com sede em Av. das Brasas, 1000, São Paulo, SP (placeholder — substituir).
+            substituir), com sede na Rua Maria Avani Barreto, nº 87, Bairro Guarita, Sombrio/SC,
+            CEP 88960-000.
           </p>
           <h2 className="font-serif text-xl font-bold text-stone mt-8">2. Cadastro e conta</h2>
           <p>

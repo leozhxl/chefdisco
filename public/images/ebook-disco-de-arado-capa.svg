@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1250" viewBox="0 0 1000 1250">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="#c1440e"/>
+      <stop offset="45%" stop-color="#7a1f1f"/>
+      <stop offset="100%" stop-color="#1a1a1a"/>
+    </radialGradient>
+    <linearGradient id="frameGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ddbc72"/>
+      <stop offset="100%" stop-color="#9c360a"/>
+    </linearGradient>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.05 0"/>
+    </filter>
+  </defs>
+
+  <rect width="1000" height="1250" fill="url(#bg)"/>
+  <rect width="1000" height="1250" filter="url(#grain)"/>
+
+  <rect x="40" y="40" width="920" height="1170" fill="none" stroke="url(#frameGrad)" stroke-width="2" opacity="0.6"/>
+  <rect x="56" y="56" width="888" height="1138" fill="none" stroke="#c9a24b" stroke-width="1" opacity="0.35"/>
+
+  <!-- Flame emblem -->
+  <g transform="translate(500,300)">
+    <path d="M0,-95 C40,-55 55,-15 30,25 C50,10 65,-15 62,-45 C90,-10 90,45 55,80 C75,70 90,50 95,25 C100,75 65,115 15,115 C-40,115 -75,80 -75,30 C-75,5 -60,-15 -45,-30 C-50,-5 -40,15 -20,25 C-35,-5 -35,-45 0,-95 Z"
+      fill="#ddbc72" opacity="0.95"/>
+    <path d="M0,-55 C22,-30 30,-5 15,15 C28,5 35,-10 33,-28 C50,-5 50,25 28,45 C40,38 48,25 50,12 C55,42 32,65 0,65 C-25,65 -42,45 -42,20 C-42,5 -32,-8 -22,-18 C-25,-2 -18,10 -5,15 C-15,-2 -18,-25 0,-55 Z"
+      fill="#c1440e"/>
+  </g>
+
+  <line x1="180" y1="405" x2="820" y2="405" stroke="#c9a24b" stroke-width="1.5" opacity="0.55"/>
+
+  <text x="500" y="500" text-anchor="middle" font-family="Georgia, 'Playfair Display', serif" font-size="30" fill="#ddbc72" letter-spacing="6" opacity="0.9">CHEF DO DISCO</text>
+
+  <text x="500" y="600" text-anchor="middle" font-family="Georgia, 'Playfair Display', serif" font-weight="700" font-size="74" fill="#ede6da">O LIVRO DO</text>
+  <text x="500" y="685" text-anchor="middle" font-family="Georgia, 'Playfair Display', serif" font-weight="700" font-size="74" fill="#ede6da">DISCO DE ARADO</text>
+
+  <line x1="330" y1="740" x2="670" y2="740" stroke="#c9a24b" stroke-width="1.5" opacity="0.55"/>
+
+  <text x="500" y="800" text-anchor="middle" font-family="'Trebuchet MS', sans-serif" font-size="30" fill="#d8cbb4">10 receitas para reunir a família,</text>
+  <text x="500" y="840" text-anchor="middle" font-family="'Trebuchet MS', sans-serif" font-size="30" fill="#d8cbb4">os amigos e cozinhar de verdade no fogo</text>
+
+  <text x="500" y="1140" text-anchor="middle" font-family="'Trebuchet MS', sans-serif" font-size="22" fill="#c9a24b" letter-spacing="3">CARNES · MASSAS · RISOTOS · ARROZES · FRUTOS DO MAR · QUEIJOS</text>
+</svg>

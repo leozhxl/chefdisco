@@ -20,7 +20,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     name: "YouTube",
-    handle: "Chef do Disco (placeholder — substituir)",
+    handle: "Chef do Disco",
     href: "https://youtube.com/@chefdodisco",
     description: "Aulas completas, making-of de eventos e entrevistas.",
   },

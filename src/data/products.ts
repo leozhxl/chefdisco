@@ -1,16 +1,12 @@
 export type ProductCategory =
   | "facas"
-  | "tabuas"
   | "livros"
-  | "kits"
   | "bones"
   | "copos";
 
 export const categoryLabels: Record<ProductCategory, string> = {
   facas: "Facas de Churrasco",
-  tabuas: "Tábuas de Churrasco",
   livros: "Livros de Receitas Digitais",
-  kits: "Kits & Combos",
   bones: "Bonés",
   copos: "Copos",
 };
@@ -47,6 +43,34 @@ const g = {
 };
 
 export const products: Product[] = [
+  {
+    slug: "ebook-10-receitas-no-disco-de-arado",
+    name: "O Livro do Disco de Arado",
+    category: "livros",
+    priceCents: 1990,
+    isDigital: true,
+    shortDescription: "E-book digital com 10 receitas para reunir a família e os amigos e cozinhar de verdade no fogo, no disco de arado.",
+    description: [
+      "Um compilado de 10 receitas selecionadas e organizadas a partir do repertório de pratos do Chef do Disco, pensadas para o disco de arado e para reunir de 8 a 10 pessoas em cada preparo.",
+      "Do clássico ao autoral: vaca atolada, hambúrguer com piscina de cheddar, massa com brie e bacon, risoto de camarão, arroz com coraçãozinho, entrevero, paella de frutos do mar, arroz carreteiro, penne ao molho de queijo com picanha e picanha ao molho de queijo com abacaxi.",
+      "Cada receita traz ingredientes, modo de preparo passo a passo e a Dica do Chef do Disco para acertar o ponto — do fogo à finalização.",
+      "Formato digital em PDF, com entrega automática por e-mail após a confirmação do pagamento.",
+    ],
+    material: "E-book em PDF, formato digital",
+    dimensions: "10 receitas · Rendimento de 8–10 pessoas por receita",
+    care: [
+      "Acesso imediato após a confirmação do pagamento.",
+      "Link de download válido por 30 dias, enviado por e-mail.",
+      "Leitura em qualquer dispositivo compatível com PDF.",
+    ],
+    gradient: g.ember,
+    gallery: [g.ember, g.gold],
+    image: "/images/ebook-disco-de-arado-capa.svg",
+    rating: 5,
+    reviewCount: 0,
+    reviews: [],
+    featured: true,
+  },
   {
     slug: "bone-chef-do-disco-aba-curva",
     name: "Boné Chef do Disco Aba Curva",

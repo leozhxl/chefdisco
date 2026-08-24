@@ -4,19 +4,17 @@ import { useMemo, useState } from "react";
 import { products, categoryLabels, type ProductCategory } from "@/data/products";
 import { ProductCard } from "@/components/sections/ProductCard";
 
-const categories: (ProductCategory | "todos")[] = ["todos", "facas", "tabuas", "bones", "copos", "livros", "kits"];
+const categories: (ProductCategory | "todos")[] = ["todos", "facas", "bones", "copos", "livros"];
 
 export default function ShopClient() {
   const [category, setCategory] = useState<ProductCategory | "todos">("todos");
-  const [maxPrice, setMaxPrice] = useState(350000);
 
   const filtered = useMemo(() => {
     return products.filter((p) => {
       if (category !== "todos" && p.category !== category) return false;
-      if (p.priceCents > maxPrice) return false;
       return true;
     });
-  }, [category, maxPrice]);
+  }, [category]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-10">
@@ -38,21 +36,6 @@ export default function ShopClient() {
               </button>
             ))}
           </div>
-        </div>
-
-        <div>
-          <h3 className="font-serif text-sm font-bold uppercase tracking-wide text-stone mb-3">
-            Preço máximo: R$ {(maxPrice / 100).toFixed(0)}
-          </h3>
-          <input
-            type="range"
-            min={2000}
-            max={350000}
-            step={1000}
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(Number(e.target.value))}
-            className="w-full accent-ember"
-          />
         </div>
       </aside>
 

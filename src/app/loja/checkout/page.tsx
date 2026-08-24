@@ -2,14 +2,16 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
-import { CreditCard, QrCode, FileText, CheckCircle2, Download, Flame, Copy, Check, Clock } from "lucide-react";
+import { QrCode, CheckCircle2, Flame, Copy, Check, Clock, MessageCircle } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { EmberParticles } from "@/components/ui/EmberParticles";
 import { useCart } from "@/lib/cart-context";
 import { formatBRL, isValidEmail, isValidPhoneBR } from "@/lib/utils";
-import { processPayment, simulateConfirmPendingPayment, type PaymentMethod, type PaymentResult } from "@/lib/payments";
-import { simulateDigitalDelivery } from "@/lib/digital-delivery";
+import { processPayment, type PaymentResult } from "@/lib/payments";
+
+// Número da loja para envio de comprovante de pagamento (Pix) via WhatsApp.
+const WHATSAPP_NUMBER = "5548999858799";
 
 interface FormErrors {
   [key: string]: string;
@@ -17,16 +19,14 @@ interface FormErrors {
 
 export default function CheckoutPage() {
   const { lineItems, totalCents, hasPhysicalItems, clearCart } = useCart();
-  const [method, setMethod] = useState<PaymentMethod>("cartao");
   const [processing, setProcessing] = useState(false);
-  const [confirming, setConfirming] = useState(false);
   const [copied, setCopied] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [pending, setPending] = useState<PaymentResult | null>(null);
   const [result, setResult] = useState<{
     transactionId: string;
-    message: string;
-    downloads: { name: string; url: string }[];
+    items: { name: string; quantity: number }[];
+    totalCents: number;
   } | null>(null);
 
   const [form, setForm] = useState({
@@ -37,9 +37,6 @@ export default function CheckoutPage() {
     address: "",
     city: "",
     state: "",
-    cardNumber: "",
-    cardExpiry: "",
-    cardCvv: "",
   });
 
   function set<K extends keyof typeof form>(key: K, value: string) {
@@ -57,45 +54,31 @@ export default function CheckoutPage() {
       if (!form.city.trim()) e.city = "Informe a cidade.";
       if (!form.state.trim()) e.state = "Informe o estado.";
     }
-    if (method === "cartao") {
-      if (form.cardNumber.replace(/\s/g, "").length < 13) e.cardNumber = "Número de cartão inválido.";
-      if (!form.cardExpiry.trim()) e.cardExpiry = "Informe a validade.";
-      if (form.cardCvv.length < 3) e.cardCvv = "CVV inválido.";
-    }
     setErrors(e);
     return Object.keys(e).length === 0;
   }
 
-  async function finalizeOrder(payment: PaymentResult) {
-    const digitalItems = lineItems.filter((li) => li.product.isDigital);
-    const downloads = [];
-    for (const li of digitalItems) {
-      const delivery = await simulateDigitalDelivery(li.product.slug, form.email);
-      downloads.push({ name: li.product.name, url: delivery.downloadUrl });
-    }
+  // Nenhum download é liberado automaticamente. O cliente envia o
+  // comprovante pelo WhatsApp e o dono da loja confere e manda o PDF por lá.
+  function finalizeOrder(payment: PaymentResult) {
+    const items = lineItems.map((li) => ({ name: li.product.name, quantity: li.quantity }));
 
-    // Persist a simple mock order for the "Minha Conta" order history.
     try {
       const orders = JSON.parse(localStorage.getItem("chef-do-disco:orders") || "[]");
       orders.unshift({
         id: payment.transactionId,
         date: new Date().toISOString(),
         email: form.email,
-        items: lineItems.map((li) => ({ name: li.product.name, quantity: li.quantity })),
+        items,
         totalCents,
-        method,
-        downloads,
+        method: "pix",
       });
       localStorage.setItem("chef-do-disco:orders", JSON.stringify(orders));
     } catch {
       // ignore storage errors
     }
 
-    setResult({
-      transactionId: payment.transactionId,
-      message: method === "cartao" ? payment.message : "Pagamento confirmado (simulado). Pedido processado com sucesso.",
-      downloads,
-    });
+    setResult({ transactionId: payment.transactionId, items, totalCents });
     clearCart();
   }
 
@@ -105,33 +88,30 @@ export default function CheckoutPage() {
     setProcessing(true);
 
     const payment = await processPayment({
-      method,
+      method: "pix",
       amountCents: totalCents,
       customerName: form.name,
       customerEmail: form.email,
-      cardNumber: form.cardNumber,
-      cardExpiry: form.cardExpiry,
-      cardCvv: form.cardCvv,
     });
 
     setProcessing(false);
-
-    if (payment.status === "pending") {
-      // Pix e boleto ficam aguardando confirmação — em produção isso viria de um webhook do gateway.
-      setPending(payment);
-      return;
-    }
-
-    await finalizeOrder(payment);
+    setPending(payment);
   }
 
-  async function handleConfirmPending() {
+  function handleSentProof() {
     if (!pending) return;
-    setConfirming(true);
-    await simulateConfirmPendingPayment();
-    await finalizeOrder(pending);
-    setConfirming(false);
+    finalizeOrder(pending);
     setPending(null);
+  }
+
+  function whatsappProofLink(
+    transactionId: string,
+    items: { name: string; quantity: number }[],
+    itemsTotalCents: number
+  ) {
+    const itemsList = items.map((i) => `- ${i.name}${i.quantity > 1 ? ` (x${i.quantity})` : ""}`).join("\n");
+    const text = `Olá! Acabei de pagar o pedido ${transactionId} via Pix na loja Chef do Disco.\n\nProduto(s):\n${itemsList}\n\nTotal: ${formatBRL(itemsTotalCents)}\n\nSegue o comprovante:`;
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
   }
 
   async function handleCopyPixCode() {
@@ -188,58 +168,31 @@ export default function CheckoutPage() {
             <Clock className="h-3.5 w-3.5" /> Expira em {pending.pix.expiresInMinutes} minutos
           </p>
 
-          <Button type="button" onClick={handleConfirmPending} disabled={confirming} className="w-full mt-8">
-            <Flame className="h-4 w-4" /> {confirming ? "Confirmando..." : "Já paguei — confirmar pagamento"}
-          </Button>
-          <p className="mt-3 text-xs text-stone/40">
-            (Em produção, a confirmação chegaria automaticamente via webhook do gateway — este botão simula essa etapa.)
-          </p>
-        </Container>
-      </div>
-    );
-  }
-
-  if (pending?.boleto) {
-    return (
-      <div className="relative overflow-hidden bg-charcoal py-20 min-h-[60vh]">
-        <div className="absolute inset-0 ember-glow opacity-30 pointer-events-none" />
-        <EmberParticles count={10} subtle />
-        <Container className="relative z-10 max-w-lg text-center">
-          <FileText className="h-10 w-10 text-ember mx-auto mb-4" />
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-stone">Boleto Gerado</h1>
-          <p className="mt-2 text-stone/60 text-sm">
-            Pague em qualquer banco, lotérica ou pelo internet banking até o vencimento.
-          </p>
-
-          <div className="mt-8 rounded-md border border-gold/20 bg-charcoal-light p-6 text-left">
-            <BoletoBarcode />
-            <p className="mt-4 text-center font-mono text-sm text-stone tracking-wide break-all">
-              {pending.boleto.barcodeDigits}
+          <div className="mt-8 rounded-md border border-gold/15 bg-charcoal-light p-5 text-left">
+            <p className="text-sm text-stone/80">
+              Após pagar, envie o comprovante para nosso WhatsApp. Assim que confirmarmos o
+              recebimento, enviamos o PDF do e-book por lá.
             </p>
-            <div className="mt-5 flex items-center justify-between border-t border-gold/15 pt-4">
-              <div>
-                <p className="text-xs uppercase tracking-wide text-stone/50">Vencimento</p>
-                <p className="font-semibold text-stone">{pending.boleto.dueDate}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-xs uppercase tracking-wide text-stone/50">Valor</p>
-                <p className="font-semibold text-stone">{formatBRL(totalCents)}</p>
-              </div>
-            </div>
+            <a
+              href={whatsappProofLink(
+                pending.transactionId,
+                lineItems.map((li) => ({ name: li.product.name, quantity: li.quantity })),
+                totalCents
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center gap-2 rounded-sm bg-ember px-4 py-2.5 text-sm font-semibold uppercase tracking-wide text-charcoal hover:brightness-95 transition"
+            >
+              <MessageCircle className="h-4 w-4" /> Enviar comprovante no WhatsApp
+            </a>
           </div>
 
-          <a
-            href={pending.boleto.pdfUrl}
-            className="inline-flex items-center gap-2 mt-6 text-sm font-semibold text-ember hover:underline"
-          >
-            <Download className="h-4 w-4" /> Baixar boleto em PDF
-          </a>
-
-          <Button type="button" onClick={handleConfirmPending} disabled={confirming} className="w-full mt-8">
-            <Flame className="h-4 w-4" /> {confirming ? "Confirmando..." : "Já paguei — confirmar pagamento"}
+          <Button type="button" onClick={handleSentProof} className="w-full mt-4">
+            <Flame className="h-4 w-4" /> Já enviei o comprovante
           </Button>
           <p className="mt-3 text-xs text-stone/40">
-            (Em produção, a compensação bancária pode levar até 3 dias úteis e seria confirmada via webhook — este botão simula essa etapa.)
+            O download só é liberado depois que conferirmos o pagamento — o link será enviado
+            manualmente pelo WhatsApp.
           </p>
         </Container>
       </div>
@@ -254,31 +207,25 @@ export default function CheckoutPage() {
         <Container className="relative z-10 max-w-xl text-center">
           <Flame className="h-14 w-14 text-ember mx-auto mb-3 flame-flicker" />
           <CheckCircle2 className="h-10 w-10 text-ember mx-auto mb-6" />
-          <h1 className="font-serif text-3xl font-bold text-stone">Pedido confirmado!</h1>
-          <p className="mt-3 text-stone/70">{result.message}</p>
+          <h1 className="font-serif text-3xl font-bold text-stone">Pedido registrado!</h1>
+          <p className="mt-3 text-stone/70">Aguardando confirmação do pagamento.</p>
           <p className="mt-1 text-sm text-stone/50">Código do pedido: {result.transactionId}</p>
 
-          {result.downloads.length > 0 && (
-            <div className="mt-10 text-left rounded-md border border-gold/15 bg-charcoal-light p-6">
-              <h2 className="font-serif font-bold text-stone mb-4">Seus downloads</h2>
-              <ul className="space-y-3">
-                {result.downloads.map((d) => (
-                  <li key={d.url} className="flex items-center justify-between gap-4">
-                    <span className="text-sm text-stone/80">{d.name}</span>
-                    <a
-                      href={d.url}
-                      className="flex items-center gap-1.5 text-sm font-semibold text-ember hover:underline"
-                    >
-                      <Download className="h-4 w-4" /> Baixar
-                    </a>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 text-xs text-stone/40">
-                Um e-mail com estes links também foi enviado (simulado) para {form.email}.
-              </p>
-            </div>
-          )}
+          <div className="mt-10 text-left rounded-md border border-gold/15 bg-charcoal-light p-6">
+            <h2 className="font-serif font-bold text-stone mb-2">Aguardando confirmação</h2>
+            <p className="text-sm text-stone/70">
+              Assim que confirmarmos o pagamento pelo comprovante enviado no WhatsApp, o PDF do
+              e-book será enviado por lá.
+            </p>
+            <a
+              href={whatsappProofLink(result.transactionId, result.items, result.totalCents)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center gap-2 rounded-sm bg-ember px-4 py-2.5 text-sm font-semibold uppercase tracking-wide text-charcoal hover:brightness-95 transition"
+            >
+              <MessageCircle className="h-4 w-4" /> Enviar comprovante no WhatsApp
+            </a>
+          </div>
 
           <Link href="/loja" className="inline-block mt-10 text-ember font-semibold hover:underline">
             Continuar comprando
@@ -333,49 +280,14 @@ export default function CheckoutPage() {
 
             <section>
               <h2 className="font-serif text-xl font-bold text-stone mb-4">Pagamento</h2>
-              <div className="grid grid-cols-3 gap-3 mb-6">
-                {[
-                  { id: "cartao" as const, label: "Cartão", icon: CreditCard },
-                  { id: "pix" as const, label: "Pix", icon: QrCode },
-                  { id: "boleto" as const, label: "Boleto", icon: FileText },
-                ].map(({ id, label, icon: Icon }) => (
-                  <button
-                    type="button"
-                    key={id}
-                    onClick={() => setMethod(id)}
-                    className={`flex flex-col items-center gap-2 rounded-md border p-4 transition-colors ${
-                      method === id ? "border-ember bg-ember/10 text-ember" : "border-gold/15 text-stone/60 hover:border-gold/30"
-                    }`}
-                  >
-                    <Icon className="h-5 w-5" />
-                    <span className="text-xs font-semibold uppercase tracking-wide">{label}</span>
-                  </button>
-                ))}
+              <div className="flex items-center gap-3 rounded-md border border-ember bg-ember/10 p-4 text-ember mb-4 w-fit">
+                <QrCode className="h-5 w-5" />
+                <span className="text-xs font-semibold uppercase tracking-wide">Pix</span>
               </div>
-
-              {method === "cartao" && (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <Field label="Número do cartão" error={errors.cardNumber} className="sm:col-span-3">
-                    <input className="input" value={form.cardNumber} onChange={(e) => set("cardNumber", e.target.value)} placeholder="0000 0000 0000 0000" />
-                  </Field>
-                  <Field label="Validade" error={errors.cardExpiry}>
-                    <input className="input" value={form.cardExpiry} onChange={(e) => set("cardExpiry", e.target.value)} placeholder="MM/AA" />
-                  </Field>
-                  <Field label="CVV" error={errors.cardCvv}>
-                    <input className="input" value={form.cardCvv} onChange={(e) => set("cardCvv", e.target.value)} placeholder="000" />
-                  </Field>
-                </div>
-              )}
-              {method === "pix" && (
-                <p className="text-sm text-stone/60">
-                  Um QR Code Pix seria exibido aqui em uma integração real. Nesta demonstração, o pagamento é simulado como aprovado instantaneamente.
-                </p>
-              )}
-              {method === "boleto" && (
-                <p className="text-sm text-stone/60">
-                  O boleto seria gerado e disponibilizado para download/impressão em uma integração real. Nesta demonstração, ele é simulado.
-                </p>
-              )}
+              <p className="text-sm text-stone/60">
+                Após confirmar o pedido, um código Pix será gerado. Pague e envie o comprovante
+                pelo WhatsApp para receber o e-book.
+              </p>
             </section>
           </div>
 
@@ -398,13 +310,7 @@ export default function CheckoutPage() {
             )}
             <Button type="submit" className="w-full mt-6" disabled={processing}>
               <Flame className="h-4 w-4" />
-              {processing
-                ? "Processando..."
-                : method === "pix"
-                ? "Gerar Pix"
-                : method === "boleto"
-                ? "Gerar Boleto"
-                : "Confirmar Pedido"}
+              {processing ? "Processando..." : "Gerar Pix"}
             </Button>
           </aside>
         </form>
@@ -471,7 +377,7 @@ function PixQrPlaceholder({ seed }: { seed: string }) {
 
   return (
     <div
-      className="grid gap-[2px] bg-stone p-3 rounded-sm"
+      className="grid gap-0.5 bg-stone p-3 rounded-sm"
       style={{ gridTemplateColumns: `repeat(${size}, 1fr)`, width: 176, height: 176 }}
     >
       {cells.map((filled, i) => {
@@ -488,25 +394,6 @@ function PixQrPlaceholder({ seed }: { seed: string }) {
           />
         );
       })}
-    </div>
-  );
-}
-
-/**
- * Representação visual de um código de barras de boleto — puramente
- * decorativa. Em produção, use o código de barras real do boleto emitido.
- */
-function BoletoBarcode() {
-  const bars = Array.from({ length: 54 }, (_, i) => 1 + ((i * 37) % 4));
-  return (
-    <div className="flex h-14 items-stretch gap-[2px]" aria-hidden="true">
-      {bars.map((w, i) => (
-        <span
-          key={i}
-          className="bg-stone"
-          style={{ width: `${w}px` }}
-        />
-      ))}
     </div>
   );
 }

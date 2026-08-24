@@ -2,12 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { MessageCircle, Building2, Gem, Cake, Mail, Phone, AtSign } from "lucide-react";
 import { Container } from "@/components/ui/Container";
-import { GradientPlaceholder } from "@/components/ui/GradientPlaceholder";
-import { FlameDivider } from "@/components/ui/FlameDivider";
 import { EmberParticles } from "@/components/ui/EmberParticles";
-import { eventPackages, pastEvents } from "@/data/events";
+import { eventPackages } from "@/data/events";
 import { contactInfo } from "@/data/social";
-import QuoteForm from "./QuoteForm";
 
 export const metadata: Metadata = {
   title: "Eventos",
@@ -130,32 +127,26 @@ export default function EventosPage() {
         </Container>
       </section>
 
-      <FlameDivider className="bg-charcoal" />
-
-      <section className="bg-charcoal texture-iron py-20">
-        <Container>
-          <div className="text-center mb-14">
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-stone">Portfólio de Eventos</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pastEvents.map((ev) => (
-              <div key={ev.title}>
-                <GradientPlaceholder gradient={ev.gradient} alt={ev.title} className="aspect-[4/3] rounded-md" />
-                <h3 className="mt-3 font-serif font-bold text-stone">{ev.title}</h3>
-                <p className="text-sm text-stone/50">{ev.location} · {ev.guests}</p>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      <section className="bg-stone py-20">
-        <Container className="max-w-2xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-charcoal">Solicite um Orçamento</h2>
-            <p className="mt-3 text-charcoal/60">Sem compromisso — nossa equipe retorna em até 48h.</p>
-          </div>
-          <QuoteForm />
+      <section className="relative overflow-hidden texture-iron bg-charcoal py-20">
+        <EmberParticles count={14} />
+        <div className="absolute inset-0 ember-glow opacity-50 pointer-events-none" />
+        <Container className="relative z-10 max-w-2xl mx-auto text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-gold">Agenda limitada</p>
+          <h2 className="font-serif text-3xl sm:text-4xl font-black text-stone mt-4">
+            Poucas datas disponíveis por mês
+          </h2>
+          <p className="mt-4 text-stone/70 leading-relaxed">
+            O Chef do Disco atende um número reduzido de eventos por mês para garantir a mesma
+            qualidade em cada experiência. Fale agora no WhatsApp e garanta sua data.
+          </p>
+          <a
+            href={`https://wa.me/${contactInfo.whatsappNumber}?text=${encodeURIComponent("Olá! Quero garantir uma data para meu evento com o Chef do Disco.")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 mt-8 rounded-sm bg-[#25D366] px-8 py-4 text-base font-bold uppercase tracking-wide text-charcoal hover:brightness-95 transition"
+          >
+            <MessageCircle className="h-5 w-5" /> Garantir minha data no WhatsApp
+          </a>
         </Container>
       </section>
     </div>

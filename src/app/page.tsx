@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Flame, UtensilsCrossed, HeartHandshake, PartyPopper, Star } from "lucide-react";
+import { Flame, Star } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { LinkButton } from "@/components/ui/Button";
 import { FlameDivider } from "@/components/ui/FlameDivider";
@@ -9,13 +9,6 @@ import { EmberParticles } from "@/components/ui/EmberParticles";
 import { testimonials, seals } from "@/data/testimonials";
 import { products } from "@/data/products";
 import { socialLinks } from "@/data/social";
-
-const quickLinks = [
-  { href: "/loja", label: "Loja", icon: UtensilsCrossed, desc: "Facas, tábuas e livros digitais" },
-  { href: "/eventos", label: "Eventos", icon: PartyPopper, desc: "Experiências gastronômicas ao vivo" },
-  { href: "/acoes-sociais", label: "Ações Sociais", icon: HeartHandshake, desc: "Impacto além da mesa" },
-  { href: "/sobre", label: "Sobre", icon: Flame, desc: "A história por trás do fogo" },
-];
 
 export default function Home() {
   const featured = products.filter((p) => p.featured).slice(0, 4);
@@ -56,47 +49,7 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-charcoal to-transparent" />
       </section>
 
-      {/* Quick links */}
-      <section className="bg-charcoal texture-iron py-20">
-        <Container>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {quickLinks.map(({ href, label, icon: Icon, desc }) => (
-              <Link
-                key={href}
-                href={href}
-                className="card-hover group flex flex-col items-start gap-4 rounded-md border border-gold/15 bg-charcoal-light p-7"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-charcoal text-gold group-hover:bg-ember transition-colors">
-                  <Icon className="h-5 w-5" strokeWidth={1.6} />
-                </div>
-                <div>
-                  <h3 className="font-serif text-xl font-bold text-stone">{label}</h3>
-                  <p className="mt-1 text-sm text-stone/60">{desc}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </Container>
-      </section>
-
       <FlameDivider className="bg-charcoal" />
-
-      {/* Manifesto */}
-      <section className="bg-stone py-20">
-        <Container className="max-w-3xl text-center">
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-charcoal">
-            Nosso Manifesto
-          </h2>
-          <p className="mt-6 text-lg leading-relaxed text-charcoal/75">
-            Acreditamos que o churrasco é mais do que uma técnica — é um ritual. Um encontro entre
-            o fogo bruto e a mão que o domina. Cada faca que forjamos, cada tábua que lapidamos e
-            cada evento que assinamos carrega essa filosofia: a busca pela excelência através do
-            respeito ao ingrediente, ao instrumento e ao momento compartilhado à mesa.
-          </p>
-        </Container>
-      </section>
-
-      <FlameDivider className="bg-stone" />
 
       {/* Featured products */}
       <section className="bg-charcoal texture-iron py-20 relative">
