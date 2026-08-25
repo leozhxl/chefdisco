@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { MessageCircle, Building2, Gem, Cake, Mail, Phone, AtSign } from "lucide-react";
+import { MessageCircle, Building2, Gem, Cake, Phone, AtSign } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { EmberParticles } from "@/components/ui/EmberParticles";
 import { eventPackages } from "@/data/events";
@@ -55,9 +55,6 @@ export default function EventosPage() {
             </a>
 
             <div className="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-x-8 gap-y-3 text-sm text-stone/70">
-              <a href={`mailto:${contactInfo.email}`} className="inline-flex items-center gap-2 hover:text-gold transition-colors">
-                <Mail className="h-4 w-4" /> {contactInfo.email}
-              </a>
               <a href={`tel:+${contactInfo.whatsappNumber}`} className="inline-flex items-center gap-2 hover:text-gold transition-colors">
                 <Phone className="h-4 w-4" /> {contactInfo.phone}
               </a>

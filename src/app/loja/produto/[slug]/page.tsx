@@ -7,6 +7,7 @@ import { GradientPlaceholder } from "@/components/ui/GradientPlaceholder";
 import { FlameDivider } from "@/components/ui/FlameDivider";
 import { EmberParticles } from "@/components/ui/EmberParticles";
 import { getProductBySlug, products, categoryLabels } from "@/data/products";
+import { pratos } from "@/data/pratos";
 import { formatBRL } from "@/lib/utils";
 import AddToCart from "./AddToCart";
 import ProductGallery from "./ProductGallery";
@@ -144,6 +145,27 @@ export default async function ProductPage({
             {product.description.map((p, i) => <p key={i}>{p}</p>)}
           </div>
         </div>
+
+        {product.slug === "ebook-10-receitas-no-disco-de-arado" && (
+          <div className="mt-8 grid grid-cols-2 sm:grid-cols-5 gap-4">
+            {pratos.map((prato) => (
+              <div key={prato.src} className="rounded-md overflow-hidden border border-gold/20">
+                <div className="relative aspect-[4/5]">
+                  <Image
+                    src={prato.src}
+                    alt={prato.alt}
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 640px) 20vw, 50vw"
+                  />
+                </div>
+                <p className="p-2 text-xs font-semibold text-stone bg-charcoal-light">
+                  {prato.name}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="mt-16 max-w-3xl">
           <h2 className="font-serif text-2xl font-bold text-stone mb-6">Avaliações</h2>

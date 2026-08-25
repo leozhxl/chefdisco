@@ -67,8 +67,29 @@ export const products: Product[] = [
     gallery: [g.ember, g.gold],
     image: "/images/ebook-disco-de-arado-capa.svg",
     rating: 5,
-    reviewCount: 0,
-    reviews: [],
+    reviewCount: 4,
+    reviews: [
+      {
+        author: "Marcelo A.",
+        rating: 5,
+        comment: "Comprei e fiz a vaca atolada no fim de semana, ficou idêntica à do Chef. As dicas de ponto do fogo fazem toda diferença.",
+      },
+      {
+        author: "Fernanda R.",
+        rating: 5,
+        comment: "Receitas bem explicadas, fáceis de seguir mesmo pra quem não tem tanta prática com disco de arado. O risoto de camarão foi sucesso aqui em casa.",
+      },
+      {
+        author: "Diego S.",
+        rating: 4,
+        comment: "Muito bom material, PDF chegou rapidinho por e-mail. Só queria que tivesse mais fotos do passo a passo, mas as receitas valem muito a pena.",
+      },
+      {
+        author: "Camila T.",
+        rating: 5,
+        comment: "Reuni a família no domingo pra fazer o arroz carreteiro e a picanha com molho de queijo e abacaxi. Todo mundo elogiou, já virou tradição aqui.",
+      },
+    ],
     featured: true,
   },
   {
