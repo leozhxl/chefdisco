@@ -2,33 +2,30 @@ export interface EventPackage {
   name: string;
   description: string;
   includes: string[];
-  priceFrom: string;
 }
 
 export const eventPackages: EventPackage[] = [
   {
     name: "Chef Privativo",
     description:
-      "Uma experiência íntima com o Chef do Disco na sua casa ou espaço de eventos, para grupos de até 20 pessoas.",
+      "Uma experiência íntima com o Chef do Disco na sua casa ou espaço de eventos.",
     includes: [
       "Chef e equipe de apoio no local",
       "Cardápio personalizado de cortes nobres",
       "Estação de disco de arado montada ao vivo",
       "Harmonização sugerida com vinhos e drinks",
     ],
-    priceFrom: "a partir de R$ 3.500",
   },
   {
     name: "Churrasco Corporativo",
     description:
-      "Eventos empresariais que unem confraternização e alto padrão gastronômico, com estrutura completa para grupos maiores.",
+      "Eventos empresariais que unem confraternização e alto padrão gastronômico, com estrutura completa e sofisticada.",
     includes: [
       "Estrutura completa de cozinha ao vivo",
-      "Cardápio para 30 a 200 convidados",
+      "Cardápio personalizado para eventos corporativos",
       "Equipe de garçons e atendimento",
       "Opções vegetarianas e sem glúten",
     ],
-    priceFrom: "a partir de R$ 8.900",
   },
   {
     name: "Casamentos & Celebrações",
@@ -40,7 +37,6 @@ export const eventPackages: EventPackage[] = [
       "Prova de sabores antes do evento",
       "Equipe dedicada durante toda a celebração",
     ],
-    priceFrom: "a partir de R$ 12.000",
   },
 ];
 

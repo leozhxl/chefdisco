@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { MessageCircle, Building2, Gem, Cake, Phone, AtSign } from "lucide-react";
+import { MessageCircle, Building2, Gem, Cake, Phone, AtSign, Mail } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { EmberParticles } from "@/components/ui/EmberParticles";
 import { eventPackages } from "@/data/events";
@@ -62,9 +62,12 @@ export default function EventosPage() {
                 href="https://instagram.com/chefdodisco"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 hover:text-gold transition-colors"
+                className="inline-flex items-center hover:text-gold transition-colors"
               >
-                <AtSign className="h-4 w-4" /> {contactInfo.instagramHandle}
+                <AtSign className="h-4 w-4 mr-1" />{contactInfo.instagramHandle.replace(/^@\s*/, "")}
+              </a>
+              <a href={`mailto:${contactInfo.email}`} className="inline-flex items-center gap-2 hover:text-gold transition-colors">
+                <Mail className="h-4 w-4" /> {contactInfo.email}
               </a>
             </div>
           </div>
@@ -117,7 +120,6 @@ export default function EventosPage() {
                     </li>
                   ))}
                 </ul>
-                <p className="mt-6 font-semibold text-ember">{pkg.priceFrom}</p>
               </div>
             ))}
           </div>

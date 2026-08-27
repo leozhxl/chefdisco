@@ -13,6 +13,8 @@ const navLinks = [
   { href: "/sobre", label: "Quem Sou" },
   { href: "/loja", label: "Loja" },
   { href: "/eventos", label: "Eventos" },
+  { href: "/roda-gigante-de-costelas", label: "Roda Gigante de Costelas" },
+  { href: "/estrutura", label: "Estrutura" },
   { href: "/redes-sociais", label: "Redes Sociais" },
 ];
 
