@@ -15,14 +15,14 @@ interface Stat {
 }
 
 const stats: Stat[] = [
-  { icon: Eye, target: 50, suffix: " milhões", label: "Visualizações acumuladas" },
+  { icon: Eye, target: 100, suffix: " milhões", label: "Visualizações acumuladas" },
   { icon: TrendingUp, target: 3, suffix: " milhões", label: "Visualizações mensais" },
-  { icon: Users, target: 120, prefix: "+", suffix: " mil", label: "Seguidores nas redes" },
+  { icon: Users, target: 150, prefix: "+", suffix: " mil", label: "Seguidores nas redes" },
 ];
 
 const platformStats = [
-  { name: "TikTok", target: 65, decimals: 0, prefix: "+", suffix: " mil", icon: Music2, href: "https://tiktok.com/@chefdodisco" },
-  { name: "Instagram", target: 64.8, decimals: 1, prefix: "+", suffix: " mil", icon: Camera, href: "https://instagram.com/chefdodisco" },
+  { name: "TikTok", target: 70, decimals: 0, prefix: "+", suffix: " mil", icon: Music2, href: "https://tiktok.com/@chefdodisco" },
+  { name: "Instagram", target: 70, decimals: 0, prefix: "+", suffix: " mil", icon: Camera, href: "https://instagram.com/chefdodisco" },
 ];
 
 function useInView<T extends HTMLElement>() {
@@ -120,7 +120,7 @@ export default function AlcanceSection() {
             <div className="fire-border-spin" aria-hidden="true" />
             <Image
               src="/images/redes-sociais-phone.png"
-              alt="Perfil @chefdodisco no Instagram, com mais de 64 mil seguidores"
+              alt="Perfil @chefdodisco no Instagram, com mais de 70 mil seguidores"
               width={575}
               height={637}
               priority
