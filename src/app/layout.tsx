@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   },
   description:
     "Chef do Disco — churrasco de alto nível, facas e tábuas artesanais, livros de receitas digitais e experiências gastronômicas com fogo, ferro e disco de arado.",
-  metadataBase: new URL("https://www.chefdodisco.com.br"),
+  metadataBase: new URL("https://www.chefedodisco.com"),
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

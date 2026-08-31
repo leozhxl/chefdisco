@@ -6,7 +6,8 @@ import { EmberParticles } from "@/components/ui/EmberParticles";
 
 export const metadata: Metadata = {
   title: "Quem Sou",
-  description: "Conheça Vinicius Barreto, fundador da Chef do Disco, e a filosofia por trás da marca.",
+  description:
+    "Conheça Vinicius Barreto, chef especialista em disco de arado, fundador da Chef do Disco, e a filosofia por trás da marca.",
 };
 
 export default function SobrePage() {

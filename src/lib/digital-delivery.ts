@@ -20,7 +20,7 @@
 // ---------------------------------------------------------------------------
 
 const PRODUCT_FILES: Record<string, string> = {
-  "ebook-10-receitas-no-disco-de-arado": "/downloads/ebook_10_receitas_no_disco_de_arado.pdf",
+  "ebook-10-receitas-no-disco-de-arado": "/downloads/O_Livro_do_Chef_do_Disco_editado.pdf",
 };
 
 export interface DigitalDeliveryResult {

@@ -7,8 +7,9 @@ import { EmberParticles } from "@/components/ui/EmberParticles";
 import { contactInfo } from "@/data/social";
 
 export const metadata: Metadata = {
-  title: "Estrutura",
-  description: "Conheça a estrutura e os equipamentos do Chef do Disco: roda gigante de costelas, estação Búfalo Negro e tenda para eventos.",
+  title: "Estrutura para Churrasco e Eventos",
+  description:
+    "Estrutura completa do Chef do Disco para eventos: roda gigante de costelas, estação de disco de arado, tenda e equipamentos profissionais de churrasco.",
 };
 
 const structureItems = [

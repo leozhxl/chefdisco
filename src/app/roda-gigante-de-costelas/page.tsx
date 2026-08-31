@@ -7,7 +7,8 @@ import { contactInfo } from "@/data/social";
 
 export const metadata: Metadata = {
   title: "Roda Gigante de Costelas",
-  description: "Conheça a Roda Gigante de Costelas do Chef do Disco, uma estação de assados girando ao vivo no fogo.",
+  description:
+    "Roda Gigante de Costelas do Chef do Disco: uma estação de assados girando ao vivo no fogo, atração de destaque para eventos e churrascos.",
 };
 
 const gallery = [

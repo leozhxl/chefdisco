@@ -5,9 +5,9 @@ import { FlameDivider } from "@/components/ui/FlameDivider";
 import ShopClient from "./ShopClient";
 
 export const metadata: Metadata = {
-  title: "Loja",
+  title: "Loja de Churrasco",
   description:
-    "Facas de churrasco, tábuas artesanais, livros de receitas digitais e kits exclusivos Chef do Disco.",
+    "Facas de churrasco, tábuas artesanais, e-book de receitas de disco de arado e kits exclusivos assinados pelo Chef do Disco.",
 };
 
 export default function LojaPage() {

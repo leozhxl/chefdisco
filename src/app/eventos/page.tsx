@@ -7,8 +7,9 @@ import { eventPackages } from "@/data/events";
 import { contactInfo } from "@/data/social";
 
 export const metadata: Metadata = {
-  title: "Eventos",
-  description: "Chef privativo, churrasco corporativo e experiências gastronômicas Chef do Disco para o seu evento.",
+  title: "Eventos com Chef de Disco de Arado",
+  description:
+    "Chef a domicílio especializado em disco de arado: churrasco corporativo, casamentos e festas privadas com experiência gastronômica completa no fogo.",
 };
 
 const eventFormats = [
